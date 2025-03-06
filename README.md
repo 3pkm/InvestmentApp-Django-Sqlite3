@@ -16,9 +16,9 @@ A robust Django-based application for tracking investments, performing financial
 
 ![](Investment/InvestmentApp/static/i1.png)
 ![](Investment/InvestmentApp/static/i2.png)
-![](Investment/InvestmentApp\static/i3.png)
-![](Investment/InvestmentApp\static/i4.png)
-![](Investment/InvestmentApp\static/i5.png)
+![](Investment/InvestmentApp/static/i3.png)
+![](Investment/InvestmentApp/static/i4.png)
+![](Investment/InvestmentApp/static/i5.png)
 
 ## 📋 Requirements
 
