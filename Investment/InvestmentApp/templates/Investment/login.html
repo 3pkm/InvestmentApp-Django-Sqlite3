@@ -1,0 +1,168 @@
+{% extends "Investment/base.html" %}
+
+{% block title %}Login to Investment App{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="row justify-content-center align-items-center min-vh-75">
+    <div class="col-md-6 col-lg-5">
+      <div class="text-center mb-4">
+        {% load static %}
+        <img src="{% static '/Money-Investment-Logo-Vector-Template-Graphics-45107632-1.jpg' %}" alt="Logo" style="height: 80px; margin-bottom: 20px;" class="login-logo" />
+        <h2 class="font-weight-bold">Welcome Back!</h2>
+        <p class="text-muted">Please login to access your investment dashboard</p>
+      </div>
+
+      <div class="card border-0 shadow-lg">
+        <div class="card-body p-5">
+          {% if form.errors %}
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fa fa-exclamation-circle mr-2"></i>
+            Your username and password didn't match. Please try again.
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          {% endif %}
+
+          <form method="post" class="login-form">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="id_username" class="font-weight-bold">
+                <i class="fa fa-user mr-2"></i>Username
+              </label>
+              <input 
+                type="text" 
+                name="username" 
+                class="form-control form-control-lg" 
+                id="id_username" 
+                required
+                placeholder="Enter your username"
+              >
+            </div>
+            <div class="form-group">
+              <label for="id_password" class="font-weight-bold">
+                <i class="fa fa-lock mr-2"></i>Password
+              </label>
+              <div class="input-group">
+                <input 
+                  type="password" 
+                  name="password" 
+                  class="form-control form-control-lg" 
+                  id="id_password" 
+                  required
+                  placeholder="Enter your password"
+                >
+                <div class="input-group-append">
+                  <button 
+                    class="btn btn-outline-secondary" 
+                    type="button" 
+                    id="togglePassword"
+                    onclick="togglePasswordVisibility()"
+                  >
+                    <i class="fa fa-eye"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mt-4">
+              <button type="submit" class="btn btn-primary btn-lg btn-block">
+                <i class="fa fa-sign-in mr-2"></i>Login
+              </button>
+            </div>
+          </form>
+          
+          <div class="text-center mt-4">
+            <p class="mb-2">
+              <a href="{% url 'password_reset' %}" class="text-primary">
+                <i class="fa fa-key mr-1"></i>Forgot your password?
+              </a>
+            </p>
+            <p class="mb-0">
+              Don't have an account? 
+              <a href="{% url 'register' %}" class="text-primary font-weight-bold">
+                Register here
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Proof -->
+      <div class="text-center mt-4">
+        <p class="text-muted small">
+          <i class="fa fa-shield mr-1"></i>
+          Secure login powered by Django Authentication
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .min-vh-75 {
+    min-height: 75vh;
+  }
+  
+  .login-logo {
+    transition: transform 0.3s ease;
+  }
+  
+  .login-logo:hover {
+    transform: scale(1.05);
+  }
+  
+  .login-form input {
+    border-radius: 8px;
+    padding: 12px;
+    border: 1px solid #dee2e6;
+    transition: all 0.3s ease;
+  }
+  
+  .login-form input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 0.2rem rgba(59, 130, 246, 0.25);
+  }
+  
+  .btn-primary {
+    border-radius: 8px;
+    padding: 12px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+  }
+  
+  .alert {
+    border-radius: 8px;
+  }
+  
+  .card {
+    border-radius: 16px;
+    transition: all 0.3s ease;
+  }
+  
+  .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  }
+</style>
+
+<script>
+  function togglePasswordVisibility() {
+    const passwordInput = document.getElementById('id_password');
+    const toggleButton = document.getElementById('togglePassword');
+    
+    if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      toggleButton.innerHTML = '<i class="fa fa-eye-slash"></i>';
+    } else {
+      passwordInput.type = 'password';
+      toggleButton.innerHTML = '<i class="fa fa-eye"></i>';
+    }
+  }
+</script>
+{% endblock %}

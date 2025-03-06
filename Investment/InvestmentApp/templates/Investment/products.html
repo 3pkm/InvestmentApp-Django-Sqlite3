@@ -1,0 +1,21 @@
+{% extends "Investment/base.html" %} {% block title %}Products - Investment
+App{% endblock %} {% block content %}
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<h2 class="text-center">Products</h2>
+<table class="table table-bordered">
+  <thead class="thead-dark">
+    <tr>
+      <th>Product ID</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for product in products %}
+    <tr>
+      <td>{{ product.id }}</td>
+      <td>{{ product.name }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

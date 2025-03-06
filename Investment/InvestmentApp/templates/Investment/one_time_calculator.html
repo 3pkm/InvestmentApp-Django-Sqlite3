@@ -1,0 +1,144 @@
+{% extends 'Investment/base.html' %}
+
+{% block title %}One-Time Investment Calculator - Investment App{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h2>One-Time Investment Calculator</h2>
+  
+  <form method="POST">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="customer">Select Customer:</label>
+      <select class="form-control" name="customer" id="customer" required>
+        {% for customer in customers %}
+        <option value="{{ customer.id }}">{{ customer.username }}</option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="one_time_investment">One-Time Investment Amount:</label>
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">₹</span>
+        </div>
+        <input type="number" step="0.01" min="0" name="one_time_investment" class="form-control">
+      </div>
+      <small class="form-text text-muted">Leave empty to use only existing investments.</small>
+    </div>
+
+    <div class="form-group">
+      <label for="time_duration">Time Duration (Years):</label>
+      <div class="input-group">
+        <input type="number" step="0.1" min="0.1" name="time_duration" class="form-control" required>
+        <div class="input-group-append">
+          <span class="input-group-text">years</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="expected_return_rate">Expected Return Rate (Annual %):</label>
+      <div class="input-group">
+        <input type="number" step="0.01" min="0" name="expected_return_rate" class="form-control" required>
+        <div class="input-group-append">
+          <span class="input-group-text">%</span>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Calculate</button>
+  </form>
+
+  {% if result %}
+  <div class="mt-4">
+    <h4>Results</h4>
+    <ul class="list-group">
+      <li class="list-group-item">Existing Investments: ₹{{ existing_investments }}</li>
+      {% if one_time_investment %}
+      <li class="list-group-item">One-Time Investment: ₹{{ one_time_investment }}</li>
+      {% endif %}
+      <li class="list-group-item">Total Invested Amount: ₹{{ total_investment }}</li>
+      <li class="list-group-item">Estimated Return After {{ time_duration_years }} Years: ₹{{ result }}</li>
+    </ul>
+  </div>
+  
+  <div class="mt-4">
+    <h4>Investment Growth Chart</h4>
+    <div class="card">
+      <div class="card-body">
+        <canvas id="investmentChart" width="100%" height="50"></canvas>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('investmentChart').getContext('2d');
+      
+      // Calculate yearly investment growth
+      // Safely get values from Django context and convert to JavaScript numbers
+      const initialInvestment = parseFloat("{{ total_investment|escapejs }}") || 0;
+      const years = parseFloat("{{ time_duration_years|escapejs }}") || 0;
+      const annualRate = parseFloat("{{ expected_return_rate|escapejs }}") / 100 || 0;
+      
+      const labels = [];
+      const growthData = [];
+      
+      for (let year = 0; year <= years; year++) {
+        labels.push('Year ' + year);
+        
+        // Calculate returns with compound interest for each year
+        const value = initialInvestment * Math.pow(1 + annualRate, year);
+        growthData.push(value);
+      }
+      
+      new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Investment Value',
+            data: growthData,
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 2,
+            fill: true
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: 'Amount (₹)'
+              }
+            }
+          },
+          plugins: {
+            title: {
+              display: true,
+              text: 'Investment Growth Over Time'
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return 'Investment Value: ₹' + context.raw.toFixed(2);
+                }
+              }
+            }
+          }
+        }
+      });
+    });
+  </script>
+  {% elif error %}
+  <div class="mt-4">
+    <p class="text-danger">{{ error }}</p>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
